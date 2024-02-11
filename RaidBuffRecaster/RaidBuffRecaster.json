@@ -12,6 +12,5 @@
   "ApplicableVersion": "any",
   "DalamudApiLevel": 9,
   "DownloadLinkInstall": "https://github.com/ktwave/RaidBuffRecaster/releases/download/latest/RaidBuffRecaster.zip",
-  "DownloadLinkTesting": "https://github.com/ktwave/RaidBuffRecaster/releases/download/latest/RaidBuffRecaster.zip",
   "DownloadLinkUpdate": "https://github.com/ktwave/RaidBuffRecaster/releases/download/latest/RaidBuffRecaster.zip"
 }
