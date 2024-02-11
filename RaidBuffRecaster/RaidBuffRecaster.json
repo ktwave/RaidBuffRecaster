@@ -1,0 +1,12 @@
+{
+  "LoadPriority": 0,
+  "Author": "wav",
+  "Name": "Raid Buff Recaster",
+  "Punchline": "A simple synergy recast management plugin for raids.",
+  "Description": "シンプルなレイド用シナジーリキャスト管理プラグイン。",
+  "InternalName": "RaidBuffRecaster",
+  "Tags": [ "UI", "Recast", "Buff" ],
+  "RepoUrl": "https://github.com/ktwave/RaidBuffRecaster",
+  "ApplicableVersion": "any",
+  "DalamudApiLevel": 9
+}
