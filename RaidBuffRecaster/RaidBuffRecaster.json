@@ -1,5 +1,4 @@
 {
-  "LoadPriority": 0,
   "Author": "wav",
   "Name": "Raid Buff Recaster",
   "Punchline": "A simple synergy recast management plugin for raids.",
@@ -7,6 +6,7 @@
   "InternalName": "RaidBuffRecaster",
   "Tags": [ "UI", "Recast", "Buff" ],
   "RepoUrl": "https://github.com/ktwave/RaidBuffRecaster/tree/master/RaidBuffRecaster",
+  "LoadPriority": 0,
   "AssemblyVersion": "1.0.0.0",
   "TestingAssemblyVersion": "1.0.0.0",
   "ApplicableVersion": "any",
