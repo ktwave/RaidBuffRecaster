@@ -1,0 +1,11 @@
+{
+  "Author": "wav",
+  "Name": "Raid Buff Recaster",
+  "InternalName": "RaidBuffRecaster",
+  "Description": "",
+  "Punchline": "シンプルなレイド用シナジーリキャスト管理プラグイン。\nA simple synergy recast management plugin for raids.",
+  "ApplicableVersion": "any",
+  "RepoUrl": "https://github.com/",
+  "LoadPriority": 0,
+  "AcceptsFeedback": false
+}
