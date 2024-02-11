@@ -6,7 +6,7 @@
   "Description": "シンプルなレイド用シナジーリキャスト管理プラグイン。",
   "InternalName": "RaidBuffRecaster",
   "Tags": [ "UI", "Recast", "Buff" ],
-  "RepoUrl": "https://github.com/ktwave/RaidBuffRecaster",
+  "RepoUrl": "https://github.com/ktwave/RaidBuffRecaster/tree/master/RaidBuffRecaster",
   "AssemblyVersion": "1.0.0.0",
   "TestingAssemblyVersion": "1.0.0.0",
   "ApplicableVersion": "any",
