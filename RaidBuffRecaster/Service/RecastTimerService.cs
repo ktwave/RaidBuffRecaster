@@ -22,18 +22,6 @@ namespace RaidBuffRecaster.Service
             r.row = lRow;
             r.col = lCol;
 
-            r.imageWidth = Constants.ImageWidth;
-            r.imageHeight = Constants.ImageWidth;
-            r.imageSize = new Vector2(r.imageWidth, r.imageHeight);
-
-            r.imageOffsetX = lCol * (r.imageWidth + config.Padding);
-            r.imageOffsetY = lRow * r.imageHeight;
-            r.imageOffset = new Vector2(r.imageOffsetX, r.imageOffsetY);
-
-            r.textOffsetX = lCol * (r.imageWidth + config.Padding);
-            r.textOffsetY = (r.imageHeight * lRow) + r.imageHeight / 5;
-            r.textOffset = new Vector2(0, 0);
-
             return r;
         }
     }

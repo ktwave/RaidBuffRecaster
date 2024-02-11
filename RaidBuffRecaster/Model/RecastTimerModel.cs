@@ -18,17 +18,5 @@ namespace RaidBuffRecaster.Model {
 
         internal int col { get; set; }
         internal int row { get; set; } 
-
-        internal float imageWidth { get; set; }
-        internal float imageHeight { get; set; }
-        internal Vector2 imageSize { get; set; }
-
-        internal float imageOffsetX { get; set; }
-        internal float imageOffsetY { get; set; }
-        internal Vector2 imageOffset { get; set; }
-
-        internal float textOffsetX { get; set; }
-        internal float textOffsetY { get; set; }
-        internal Vector2 textOffset { get; set; }
     }
 }

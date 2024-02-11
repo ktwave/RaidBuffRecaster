@@ -160,12 +160,6 @@ namespace RaidBuffRecaster {
                         ImGui.Separator();
                         ImGui.Spacing();
 
-                        /*
-                        var isDebug = config.IsDebug;
-                        if (ImGui.Checkbox("デバッグ情報(Debug Window)", ref isDebug)) {
-                            config.IsDebug = isDebug;
-                        }
-                        */
                         config.Font = GameFontFamilyAndSize.Axis36;
                     }
                     ImGui.End();
@@ -229,12 +223,6 @@ namespace RaidBuffRecaster {
                         }
                     }
 
-                    /*
-                    if (config.IsDebug) {
-                        DrawDebugWindow();
-                    }
-                    */
-
                     if (config.IsPreview) {
                         var pos = MainService.GetPtlistPosition();
                         if (pos != null)
@@ -281,7 +269,7 @@ namespace RaidBuffRecaster {
                     var textOffsetY = (imgHeight * row) + (imgHeight / 5);
 
                     // Draw Image
-                    ImGui.SetCursorPos(new Vector2(col * imgWidth, row * imgHeight));
+                    ImGui.SetCursorPos(new Vector2(col * (imgWidth+ config.Padding), row * imgHeight));
                     ImGui.Image(buffs[i].Image.ImGuiHandle, new Vector2(Constants.ImageWidth * config.Size / 100, Constants.ImageHeight * config.Size / 100));
 
                     // Draw Time
@@ -314,79 +302,13 @@ namespace RaidBuffRecaster {
             ImGui.End();
         }
 
-        private void DrawDebugWindow() {
-
-            if (ImGui.Begin("Debug Window", ImGuiWindowFlags.AlwaysAutoResize)) {
-                ImGui.Text("[Debug Window 1]");
-                ImGui.Text("");
-
-                localPartyList.ForEach(p => {
-                    ImGui.Text("Index");
-                    ImGui.SameLine();
-                    ImGui.Text(p.Index.ToString());
-
-                    ImGui.Text("ObjectId");
-                    ImGui.SameLine();
-                    ImGui.Text(p.ObjectId.ToString());
-
-                    ImGui.Text("JobId");
-                    ImGui.SameLine();
-                    ImGui.Text(p.JobId.ToString());
-
-                    ImGui.Text("MemberName");
-                    ImGui.SameLine();
-                    ImGui.Text(p.MemberName);
-
-                    ImGui.Text("");
-                });
-                ImGui.End();
-            }
-
-            if (ImGui.Begin("Debug Window2", ImGuiWindowFlags.AlwaysAutoResize)) {
-                ImGui.Text("[Debug Window 2]");
-                ImGui.Text("");
-
-                RecastTimers.ForEach(r => {
-                    ImGui.Image(r.Image.ImGuiHandle, r.imageSize);
-                    ImGui.SameLine();
-                    ImGui.Text("row: " + r.row);
-                    ImGui.SameLine();
-                    ImGui.Text("col: " + r.col);
-                    ImGui.SameLine();
-                    ImGui.Text("text offset x: " + r.textOffsetX.ToString());
-                    ImGui.SameLine();
-                    ImGui.Text("text offset y: " + r.textOffsetY.ToString());
-                });
-                ImGui.End();
-            }
-
-            if (ImGui.Begin("Debug Window3", ImGuiWindowFlags.AlwaysAutoResize)) {
-                ImGui.Text("[Debug Window 3]");
-                ImGui.Text("");
-
-                GameObject target = DalamudService.TargetManager.Target;
-
-                if (target is Dalamud.Game.ClientState.Objects.Types.BattleChara b) {
-                    var ss = b.StatusList.Where(s => s.StatusId != 0).ToList();
-                    for (int i = 0; i < ss.Count(); i++) {
-                        var s = ss[i];
-
-                        ImGui.Text("ObjectId: " + target.ObjectId.ToString());
-                        ImGui.Text("StatusId[" + i + "]: " + s.StatusId.ToString());
-                        ImGui.Text("SourceId[" + i + "]: " + s.SourceId.ToString());
-                    }
-                }
-                ImGui.End();
-                ImGui.PopStyleColor();
-                ImGui.PopFont();
-            }
-        }
-
         private void DrawOverray(List<RecastTimerModel> recastTimers, Vector2 pos) {
             // --General Setting--
             var localPlayer = DalamudService.ClientState.LocalPlayer;
             var partyList = DalamudService.PartyList;
             var actionManager = ActionManager.Instance();
+            var col = 0;
+            var row = 0;
             var maxRow = Constants.maxRow / config.Columns;
             float imgWidth = Constants.ImageWidth * config.Size / 100f;
             float imgHeight = Constants.ImageHeight * config.Size / 100f;
@@ -441,8 +363,8 @@ namespace RaidBuffRecaster {
                         var elapsedTime = recastTime.StopWatch.Elapsed.TotalMilliseconds / 1000;
                         var time = (int)(recastTime.RecastTime - elapsedTime);
                         var dispTime = time.ToString("#");
-                        var textOffsetX = recastTime.imageOffsetX;
-                        var textOffsetY = recastTime.textOffsetY;
+                        var textOffsetX = col * (imgWidth + config.Padding);
+                        var textOffsetY = (imgHeight * row) + (imgHeight / 5);
 
                         if (elapsedTime >= recastTime.RecastTime) {
                             recastTime.StopWatch.Stop();
@@ -457,7 +379,7 @@ namespace RaidBuffRecaster {
                         }
 
                         // Draw Image
-                        ImGui.SetCursorPos(recastTime.imageOffset);
+                        ImGui.SetCursorPos(new Vector2(col * (imgWidth + config.Padding), row * imgHeight));
                         ImGui.Image(recastTime.Image.ImGuiHandle, new Vector2(Constants.ImageWidth * config.Size / 100, Constants.ImageHeight * config.Size / 100));
 
                         // Draw Time
@@ -478,6 +400,12 @@ namespace RaidBuffRecaster {
 
                         ImGui.SetCursorPos(new Vector2(textOffsetX, textOffsetY));
                         ImGui.Text(dispTime);
+
+                        col++;
+                        if (col == config.Columns) {
+                            col = 0;
+                            row++;
+                        }
                     }
 
                     ImGui.End();
