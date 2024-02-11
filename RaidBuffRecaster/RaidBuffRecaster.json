@@ -7,6 +7,11 @@
   "InternalName": "RaidBuffRecaster",
   "Tags": [ "UI", "Recast", "Buff" ],
   "RepoUrl": "https://github.com/ktwave/RaidBuffRecaster",
+  "AssemblyVersion": "1.0.0.0",
+  "TestingAssemblyVersion": "1.0.0.0",
   "ApplicableVersion": "any",
-  "DalamudApiLevel": 9
+  "DalamudApiLevel": 9,
+  "DownloadLinkInstall": "https://github.com/ktwave/RaidBuffRecaster/releases/download/latest/RaidBuffRecaster.zip",
+  "DownloadLinkTesting": "https://github.com/ktwave/RaidBuffRecaster/releases/download/latest/RaidBuffRecaster.zip",
+  "DownloadLinkUpdate": "https://github.com/ktwave/RaidBuffRecaster/releases/download/latest/RaidBuffRecaster.zip"
 }
