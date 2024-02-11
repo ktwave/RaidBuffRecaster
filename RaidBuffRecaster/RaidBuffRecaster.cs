@@ -3,6 +3,7 @@ using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Objects;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Objects.Types;
+using Dalamud.Game.ClientState.Party;
 using Dalamud.Game.ClientState.Statuses;
 using Dalamud.Game.ClientState.Structs;
 using Dalamud.Game.Internal;
@@ -37,6 +38,7 @@ using Lumina.Data.Parsing;
 using Lumina.Excel.GeneratedSheets;
 using Newtonsoft.Json.Linq;
 using RaidBuffRecaster.Const;
+using RaidBuffRecaster.DataModel;
 using RaidBuffRecaster.Model;
 using RaidBuffRecaster.Service;
 using System;
@@ -98,7 +100,23 @@ namespace RaidBuffRecaster
         private void Draw() {
             if (isConfigOpen) { // config
                 if (ImGui.Begin("RaidBuffRecaster Config", ref isConfigOpen, ImGuiWindowFlags.NoResize)) {
-                    ImGui.SetWindowSize(new Vector2(300, 600));
+                    ImGui.SetWindowSize(new Vector2(350, 550));
+
+                    var isEnabled = config.IsEnabled;
+                    if(ImGui.Checkbox("プラグインを有効にする(Enable Plugin)", ref isEnabled)) {
+                        config.IsEnabled = isEnabled;
+                    }
+
+                    ImGui.Spacing();
+
+                    var isPreview = config.IsPreview;
+                    if (ImGui.Checkbox("プレビュー(Preview)", ref isPreview)) {
+                        config.IsPreview = isPreview;
+                        // DrawPreview();
+                    }
+                    ImGui.Spacing();
+                    ImGui.Separator();
+                    ImGui.Spacing();
 
                     ImGui.Text("X座標のオフセット(X Offset)");
                     var offsetX = (int)config.OffsetX;
@@ -140,13 +158,6 @@ namespace RaidBuffRecaster
                     }
                     ImGui.Spacing();
 
-                    var isPreview = config.IsPreview;
-                    if (ImGui.Checkbox("プレビュー(Preview)", ref isPreview)) {
-                        config.IsPreview = isPreview;
-                        // DrawPreview();
-                    }
-                    ImGui.Spacing();
-
                     ImGui.Text("テキストカラー(Text Color)");
                     var textColor = config.Color;
                     ImGui.BeginChild("ragio");
@@ -176,6 +187,8 @@ namespace RaidBuffRecaster
                     DalamudService.PluginInterface.SavePluginConfig(config);
                 }
             }
+
+            if (!config.IsEnabled) return;
 
             // get instance
             var ownerPlayer = DalamudService.ClientState.LocalPlayer;
@@ -243,7 +256,9 @@ namespace RaidBuffRecaster
 
                 if (config.IsPreview) {
                     if (ImGui.Begin("Debug Window", ImGuiWindowFlags.AlwaysAutoResize)) {
-                        // ImGui.SetWindowSize(new Vector2(800, 1000));
+                        ImGui.Text("[Debug Window 1]");
+                        ImGui.Text("");
+
                         localPartyList.ForEach(p => {
                             ImGui.Text("Index");
                             ImGui.SameLine();
@@ -267,7 +282,9 @@ namespace RaidBuffRecaster
                     }
 
                     if (ImGui.Begin("Debug Window2", ImGuiWindowFlags.AlwaysAutoResize)) {
-                        // ImGui.SetWindowSize(new Vector2(800, 1000));
+                        ImGui.Text("[Debug Window 2]");
+                        ImGui.Text("");
+
                         RecastTimers.ForEach(r => {
                             ImGui.Image(r.Image.ImGuiHandle, r.imageSize);
                             ImGui.SameLine();
@@ -281,38 +298,27 @@ namespace RaidBuffRecaster
                         });
                         ImGui.End();
                     }
-                }
-            }
 
-            if (ImGui.Begin("Debug Window3", ImGuiWindowFlags.AlwaysAutoResize)) {
-                GameObject target;
+                    if (ImGui.Begin("Debug Window3", ImGuiWindowFlags.AlwaysAutoResize)) {
+                        ImGui.Text("[Debug Window 3]");
+                        ImGui.Text("");
 
-                target = DalamudService.TargetManager.Target;
+                        GameObject target = DalamudService.TargetManager.Target;
 
-                if (target is Dalamud.Game.ClientState.Objects.Types.BattleChara b) {
-                    var ss = b.StatusList.Where(s => s.StatusId != 0).ToList();
-                    for (int i = 0; i < ss.Count(); i++) {
-                        var s = ss[i];
-                        
-                        ImGui.Text("ObjectId: " + target.ObjectId.ToString());
-                        ImGui.Text("StatusId[" + i + "]: " + s.StatusId.ToString());
-                        ImGui.Text("SourceId[" + i + "]: " + s.SourceId.ToString());
+                        if (target is Dalamud.Game.ClientState.Objects.Types.BattleChara b) {
+                            var ss = b.StatusList.Where(s => s.StatusId != 0).ToList();
+                            for (int i = 0; i < ss.Count(); i++) {
+                                var s = ss[i];
+
+                                ImGui.Text("ObjectId: " + target.ObjectId.ToString());
+                                ImGui.Text("StatusId[" + i + "]: " + s.StatusId.ToString());
+                                ImGui.Text("SourceId[" + i + "]: " + s.SourceId.ToString());
+                            }
+                        }
+
+                        ImGui.End();
                     }
                 }
-
-                target = DalamudService.TargetManager.PreviousTarget;
-                if (target is Dalamud.Game.ClientState.Objects.Types.BattleChara b2) {
-                    var ss = b2.StatusList.Where(s => s.StatusId != 0).ToList();
-                    for (int i = 0; i < ss.Count(); i++) {
-                        var s = ss[i];
-
-                        ImGui.Text("ObjectId: " + target.ObjectId.ToString());
-                        ImGui.Text("StatusId[" + i + "]: " + s.StatusId.ToString());
-                        ImGui.Text("SourceId[" + i + "]: " + s.SourceId.ToString());
-                    }
-                }
-
-                ImGui.End();
             }
         }
         public static AtkUnitBase* GetUnitBase(string name, int index = 1) {
@@ -359,8 +365,8 @@ namespace RaidBuffRecaster
                     // select partymember
                     var partyMember = partyList.Where(p => p.ObjectId == recastTime.OwnerId).FirstOrDefault();
 
-                    // get target status
-                    var status = partyMember.Statuses.Where(p => p.StatusId == recastTime.StatusId).FirstOrDefault();
+                    // get status
+                    var status = getStatus(partyMember, recastTime);
                     
                     // exist status ?
                     if (status != null) { 
@@ -399,6 +405,20 @@ namespace RaidBuffRecaster
 
                 ImGui.End();
             }
+        }
+
+        private Dalamud.Game.ClientState.Statuses.Status getStatus(PartyMember p, RecastTimerModel r) {
+            if (p.ClassJob.Id == (uint)JobIds.NIN || p.ClassJob.Id == (uint)JobIds.SCH) {
+                GameObject target = DalamudService.TargetManager.Target;
+                if (target is Dalamud.Game.ClientState.Objects.Types.BattleChara b) {
+                    var statusList = b.StatusList.Where(s => s.StatusId != 0).ToList();
+                    return statusList.Where(s => s.StatusId == r.StatusId).FirstOrDefault();
+                }
+            } else {
+                // get target status
+                return p.Statuses.Where(p => p.StatusId == r.StatusId).FirstOrDefault();
+            }
+            return null;
         }
     }
 }

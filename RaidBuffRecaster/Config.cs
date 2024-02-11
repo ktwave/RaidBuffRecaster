@@ -24,6 +24,7 @@ namespace RaidBuffRecaster
         public int Padding { get; set; } = 5;
         public Vector4 Color { get; set; } = Constants.White;
         public bool IsPreview { get; set; } = false;
+        public bool IsEnabled { get; set; } = false;
 
         public GameFontFamilyAndSize? Font = null;
 
