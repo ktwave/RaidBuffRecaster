@@ -10,9 +10,9 @@ namespace RaidBuffRecaster.Service
 {
     public static class PartyMemberService
     {
-        internal static ParryMemberModel CreatePartyMember(PartyMember? p, int i)
+        internal static PartyMemberModel CreatePartyMember(PartyMember? p, int i)
         {
-            ParryMemberModel lp = new ParryMemberModel();
+            PartyMemberModel lp = new PartyMemberModel();
             lp.Index = i;
             lp.ObjectId = p.ObjectId;
             lp.MemberName = p.Name.ToString();
@@ -20,7 +20,7 @@ namespace RaidBuffRecaster.Service
             return lp;
         }
 
-        internal static ParryMemberModel UpdatePartyMember(ParryMemberModel lp, PartyMember? p, int i)
+        internal static PartyMemberModel UpdatePartyMember(PartyMemberModel lp, PartyMember? p, int i)
         {
             lp.Index = i;
             lp.ObjectId = p.ObjectId;
@@ -29,7 +29,7 @@ namespace RaidBuffRecaster.Service
             return lp;
         }
 
-        internal static bool ComparePartyMember(ParryMemberModel lp, PartyMember? p, int i)
+        internal static bool ComparePartyMember(PartyMemberModel lp, PartyMember? p, int i)
         {
             return lp.ObjectId != p.ObjectId || lp.JobId != p.ClassJob.Id || lp.Index == i;
         }

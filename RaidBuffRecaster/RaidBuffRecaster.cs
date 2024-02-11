@@ -26,6 +26,7 @@ using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Game.Fate;
+using FFXIVClientStructs.FFXIV.Client.Game.Group;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.FFXIV.Client.UI;
@@ -58,13 +59,12 @@ using static FFXIVClientStructs.FFXIV.Client.UI.Misc.RaptureMacroModule;
 using static RaidBuffRecaster.Model.BuffActionModel;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace RaidBuffRecaster
-{
+namespace RaidBuffRecaster {
     unsafe class RaidBuffRecaster : IDalamudPlugin {
         public string Name => "RaidBuffRecaster";
         bool isConfigOpen = false;
 
-        List<Model.ParryMemberModel> localPartyList;
+        List<Model.PartyMemberModel> localPartyList;
         List<BuffAction> BuffActions;
         List<RecastTimerModel> RecastTimers;
 
@@ -98,234 +98,291 @@ namespace RaidBuffRecaster
         }
 
         private void Draw() {
-            if (isConfigOpen) { // config
-                if (ImGui.Begin("RaidBuffRecaster Config", ref isConfigOpen, ImGuiWindowFlags.NoResize)) {
-                    ImGui.SetWindowSize(new Vector2(350, 550));
+            try {
+                if (isConfigOpen) { // config
+                    if (ImGui.Begin("RaidBuffRecaster Config", ref isConfigOpen, ImGuiWindowFlags.NoResize)) {
+                        ImGui.SetWindowSize(new Vector2(350, 500));
 
-                    var isEnabled = config.IsEnabled;
-                    if(ImGui.Checkbox("プラグインを有効にする(Enable Plugin)", ref isEnabled)) {
-                        config.IsEnabled = isEnabled;
-                    }
-
-                    ImGui.Spacing();
-
-                    var isPreview = config.IsPreview;
-                    if (ImGui.Checkbox("プレビュー(Preview)", ref isPreview)) {
-                        config.IsPreview = isPreview;
-                        // DrawPreview();
-                    }
-                    ImGui.Spacing();
-                    ImGui.Separator();
-                    ImGui.Spacing();
-
-                    ImGui.Text("X座標のオフセット(X Offset)");
-                    var offsetX = (int)config.OffsetX;
-                    ImGui.SetNextItemWidth(200f);
-                    if (ImGui.DragInt(" ", ref offsetX, 0.5f)) {
-                        config.OffsetX = offsetX;
-                    }
-                    ImGui.Spacing();
-
-                    ImGui.Text("Y座標のオフセット(Y Offset)");
-                    var offsetY = (int)config.OffsetY;
-                    ImGui.SetNextItemWidth(200f);
-                    if (ImGui.DragInt("  ", ref offsetY, 0.5f)) {
-                        config.OffsetY = offsetY;
-                    }
-                    ImGui.Spacing();
-
-                    ImGui.Text("アイコンの拡大率(Icon Scale)");
-                    var size = (int)config.Size;
-                    ImGui.SetNextItemWidth(200f);
-                    if (ImGui.DragInt("   ", ref size, 1, 1, 300)) {
-                        config.Size = size;
-                    }
-                    ImGui.Spacing();
-
-                    ImGui.Text("1列辺りのアイコン数(Icon Columns)");
-                    var columns = config.Columns;
-                    ImGui.SetNextItemWidth(200f);
-                    if (ImGui.DragInt("    ", ref columns, 1f, 1, 20)) {
-                        config.Columns = columns;
-                    }
-                    ImGui.Spacing();
-
-                    ImGui.Text("アイコンの間隔(Icon Padding)");
-                    var padding = config.Padding;
-                    ImGui.SetNextItemWidth(200f);
-                    if (ImGui.DragInt("     ", ref padding, 1f, 0, 100)) {
-                        config.Padding = padding;
-                    }
-                    ImGui.Spacing();
-
-                    ImGui.Text("テキストカラー(Text Color)");
-                    var textColor = config.Color;
-                    ImGui.BeginChild("ragio");
-                    {
-                        if (ImGui.RadioButton("白(White)", textColor == Constants.White)) {
-                            config.Color = Constants.White;
+                        var isEnabled = config.IsEnabled;
+                        if (ImGui.Checkbox("プラグインを有効にする(Enable Plugin)", ref isEnabled)) {
+                            config.IsEnabled = isEnabled;
                         }
-                        if (ImGui.RadioButton("赤(Red)", textColor == Constants.Red)) {
-                            config.Color = Constants.Red;
+
+                        ImGui.Spacing();
+
+                        var isPreview = config.IsPreview;
+                        if (ImGui.Checkbox("プレビュー(Preview)", ref isPreview)) {
+                            config.IsPreview = isPreview;
                         }
-                        if (ImGui.RadioButton("緑(Green)", textColor == Constants.Green)) {
-                            config.Color = Constants.Green;
+                        ImGui.Spacing();
+                        ImGui.Separator();
+                        ImGui.Spacing();
+
+                        ImGui.Text("X座標のオフセット(X Offset)");
+                        var offsetX = (int)config.OffsetX;
+                        ImGui.SetNextItemWidth(200f);
+                        if (ImGui.DragInt(" ", ref offsetX, 0.5f)) {
+                            config.OffsetX = offsetX;
                         }
-                        if (ImGui.RadioButton("青(Blue)", textColor == Constants.Blue)) {
-                            config.Color = Constants.Blue;
+                        ImGui.Spacing();
+
+                        ImGui.Text("Y座標のオフセット(Y Offset)");
+                        var offsetY = (int)config.OffsetY;
+                        ImGui.SetNextItemWidth(200f);
+                        if (ImGui.DragInt("  ", ref offsetY, 0.5f)) {
+                            config.OffsetY = offsetY;
                         }
-                        if (ImGui.RadioButton("黒(Black)", textColor == Constants.Black)) {
-                            config.Color = Constants.Black;
+                        ImGui.Spacing();
+
+                        ImGui.Text("アイコンの拡大率(Icon Scale)");
+                        var size = (int)config.Size;
+                        ImGui.SetNextItemWidth(200f);
+                        if (ImGui.DragInt("   ", ref size, 1, 1, 300)) {
+                            config.Size = size;
+                        }
+                        ImGui.Spacing();
+
+                        ImGui.Text("1列辺りのアイコン数(Icon Columns)");
+                        var columns = config.Columns;
+                        ImGui.SetNextItemWidth(200f);
+                        if (ImGui.DragInt("    ", ref columns, 1f, 1, 20)) {
+                            config.Columns = columns;
+                        }
+                        ImGui.Spacing();
+
+                        ImGui.Text("アイコンの間隔(Icon Padding)");
+                        var padding = config.Padding;
+                        ImGui.SetNextItemWidth(200f);
+                        if (ImGui.DragInt("     ", ref padding, 1f, 0, 100)) {
+                            config.Padding = padding;
+                        }
+                        ImGui.Spacing();
+                        ImGui.Separator();
+                        ImGui.Spacing();
+
+                        /*
+                        var isDebug = config.IsDebug;
+                        if (ImGui.Checkbox("デバッグ情報(Debug Window)", ref isDebug)) {
+                            config.IsDebug = isDebug;
+                        }
+                        */
+                        config.Font = GameFontFamilyAndSize.Axis36;
+                    }
+                    ImGui.End();
+                    if (!isConfigOpen) {
+                        DalamudService.PluginInterface.SavePluginConfig(config);
+                    }
+                }
+
+                if (!config.IsEnabled) return;
+
+                if (DalamudService.ClientState.LocalPlayer == null) return;
+
+                // get instance
+                var ownerPlayer = DalamudService.ClientState.LocalPlayer;
+                var actionManager = ActionManager.Instance();
+                var partyList = DalamudService.PartyList;
+
+                if (DalamudService.Condition[ConditionFlag.InCombat] && !DalamudService.ClientState.IsPvP) {
+                    // in combat
+                    var pos = MainService.GetPtlistPosition();
+                    if (pos != null)
+                        DrawOverray(RecastTimers, (Vector2)pos);
+                } else {
+                    // not in combat
+                    bool isLocalPartyListChanged = false;
+
+                    if (localPartyList == null || localPartyList.Count() != partyList.Count()) {
+                        // Initialize or partymember count change
+                        localPartyList = new List<Model.PartyMemberModel>();
+                        for (int i = 0; i < partyList.Count(); i++) {
+                            // create
+                            localPartyList.Add(PartyMemberService.CreatePartyMember(partyList[i], i));
+                        }
+                        isLocalPartyListChanged = true;
+                    } else {
+                        for (int i = 0; i < localPartyList.Count(); i++) {
+                            // compate partyList
+                            if (PartyMemberService.ComparePartyMember(localPartyList[i], partyList[i], i)) {
+                                // existed change -> update
+                                localPartyList[i] = PartyMemberService.UpdatePartyMember(localPartyList[i], partyList[i], i);
+                                isLocalPartyListChanged = true;
+                            }
                         }
                     }
-                    ImGui.EndChild();
 
-                    config.Font = GameFontFamilyAndSize.Axis36;
+                    if (isLocalPartyListChanged) {
+                        var lRow = 0;
+                        var lCol = 0;
+                        RecastTimers = new List<RecastTimerModel>();
+                        for (int i = 0; i < localPartyList.Count(); i++) {
+                            var p = localPartyList[i];
+                            var bas = BuffActions.Where(b => b.JobId == p.JobId).ToList();
+                            for (int j = 0; j < bas.Count(); j++) {
+                                RecastTimers.Add(RecastTimerService.AddRecastTimer(p, bas[j], lCol, lRow, config));
+                                lCol++;
+                                if (lCol == config.Columns) {
+                                    lCol = 0;
+                                    lRow++;
+                                }
+                            }
+                        }
+                    }
+
+                    /*
+                    if (config.IsDebug) {
+                        DrawDebugWindow();
+                    }
+                    */
+
+                    if (config.IsPreview) {
+                        var pos = MainService.GetPtlistPosition();
+                        if (pos != null)
+                            DrawOverrayPreview((Vector2)pos);
+                    }
+                }
+            } catch (Exception e) {
+                PluginLog.Error(e.Message + "\n" + e.StackTrace);
+            } finally {
+            }
+        }
+
+        private void DrawOverrayPreview(Vector2 pos) {
+            var maxRow = Constants.maxRow / config.Columns;
+            float imgWidth = Constants.ImageWidth * config.Size / 100f;
+            float imgHeight = Constants.ImageHeight * config.Size / 100f;
+
+            // font
+            ImGui.PushFont(DalamudService.PluginInterface.UiBuilder.GetGameFontHandle(new GameFontStyle(config.Font.Value)).ImFont);
+            ImGui.PushStyleColor(ImGuiCol.Text, Constants.White);
+
+            // window offset
+            ImGuiHelpers.ForceNextWindowMainViewport();
+            ImGuiHelpers.SetNextWindowPosRelativeMainViewport(new Vector2(pos.X + config.OffsetX, pos.Y + config.OffsetY - 70));
+
+            if (ImGui.Begin("Overray",
+                    ImGuiWindowFlags.NoInputs |
+                    ImGuiWindowFlags.NoMove |
+                    ImGuiWindowFlags.NoScrollbar |
+                    ImGuiWindowFlags.NoBackground |
+                    ImGuiWindowFlags.NoTitleBar)) {
+
+                ImGui.SetWindowSize(new Vector2(config.Columns * (config.Padding + Constants.ImageWidth), maxRow * (config.Padding + imgHeight)));
+                ImGui.SetWindowFontScale(0.95f * config.Size / 100);
+
+                var col = 0;
+                var row = 0;
+                var localPlayer = DalamudService.ClientState.LocalPlayer;
+                var jobId = localPlayer.ClassJob.Id;
+                var buffs = BuffActions;
+
+                for (int i = 0; i < buffs.Count; i++) {
+                    var textOffsetX = col * (imgWidth + config.Padding);
+                    var textOffsetY = (imgHeight * row) + (imgHeight / 5);
+
+                    // Draw Image
+                    ImGui.SetCursorPos(new Vector2(col * imgWidth, row * imgHeight));
+                    ImGui.Image(buffs[i].Image.ImGuiHandle, new Vector2(Constants.ImageWidth * config.Size / 100, Constants.ImageHeight * config.Size / 100));
+
+                    // Draw Time
+                    ImGui.PushStyleColor(ImGuiCol.Text, Const.Constants.Black);
+                    ImGui.SetCursorPos(new Vector2(textOffsetX + 1.5f, textOffsetY));
+                    ImGui.Text(buffs[i].RecastTime.ToString("#"));
+
+                    ImGui.SetCursorPos(new Vector2(textOffsetX - 1.5f, textOffsetY));
+                    ImGui.Text(buffs[i].RecastTime.ToString("#"));
+
+                    ImGui.SetCursorPos(new Vector2(textOffsetX, textOffsetY + 1.5f));
+                    ImGui.Text(buffs[i].RecastTime.ToString("#"));
+
+                    ImGui.SetCursorPos(new Vector2(textOffsetX, textOffsetY - 1.5f));
+                    ImGui.Text(buffs[i].RecastTime.ToString("#"));
+
+                    ImGui.PopStyleColor();
+
+                    ImGui.SetCursorPos(new Vector2(textOffsetX, textOffsetY));
+                    ImGui.Text(buffs[i].RecastTime.ToString("#"));
+
+                    col++;
+                    if (col == config.Columns) {
+                        col = 0;
+                        row++;
+                    }
+                }
+            }
+            ImGui.PopFont();
+            ImGui.End();
+        }
+
+        private void DrawDebugWindow() {
+
+            if (ImGui.Begin("Debug Window", ImGuiWindowFlags.AlwaysAutoResize)) {
+                ImGui.Text("[Debug Window 1]");
+                ImGui.Text("");
+
+                localPartyList.ForEach(p => {
+                    ImGui.Text("Index");
+                    ImGui.SameLine();
+                    ImGui.Text(p.Index.ToString());
+
+                    ImGui.Text("ObjectId");
+                    ImGui.SameLine();
+                    ImGui.Text(p.ObjectId.ToString());
+
+                    ImGui.Text("JobId");
+                    ImGui.SameLine();
+                    ImGui.Text(p.JobId.ToString());
+
+                    ImGui.Text("MemberName");
+                    ImGui.SameLine();
+                    ImGui.Text(p.MemberName);
+
+                    ImGui.Text("");
+                });
+                ImGui.End();
+            }
+
+            if (ImGui.Begin("Debug Window2", ImGuiWindowFlags.AlwaysAutoResize)) {
+                ImGui.Text("[Debug Window 2]");
+                ImGui.Text("");
+
+                RecastTimers.ForEach(r => {
+                    ImGui.Image(r.Image.ImGuiHandle, r.imageSize);
+                    ImGui.SameLine();
+                    ImGui.Text("row: " + r.row);
+                    ImGui.SameLine();
+                    ImGui.Text("col: " + r.col);
+                    ImGui.SameLine();
+                    ImGui.Text("text offset x: " + r.textOffsetX.ToString());
+                    ImGui.SameLine();
+                    ImGui.Text("text offset y: " + r.textOffsetY.ToString());
+                });
+                ImGui.End();
+            }
+
+            if (ImGui.Begin("Debug Window3", ImGuiWindowFlags.AlwaysAutoResize)) {
+                ImGui.Text("[Debug Window 3]");
+                ImGui.Text("");
+
+                GameObject target = DalamudService.TargetManager.Target;
+
+                if (target is Dalamud.Game.ClientState.Objects.Types.BattleChara b) {
+                    var ss = b.StatusList.Where(s => s.StatusId != 0).ToList();
+                    for (int i = 0; i < ss.Count(); i++) {
+                        var s = ss[i];
+
+                        ImGui.Text("ObjectId: " + target.ObjectId.ToString());
+                        ImGui.Text("StatusId[" + i + "]: " + s.StatusId.ToString());
+                        ImGui.Text("SourceId[" + i + "]: " + s.SourceId.ToString());
+                    }
                 }
                 ImGui.End();
-                if (!isConfigOpen) {
-                    DalamudService.PluginInterface.SavePluginConfig(config);
-                }
-            }
-
-            if (!config.IsEnabled) return;
-
-            // get instance
-            var ownerPlayer = DalamudService.ClientState.LocalPlayer;
-            var actionManager = ActionManager.Instance();
-            var partyList = DalamudService.PartyList;
-
-            if (DalamudService.Condition[ConditionFlag.InCombat] && !DalamudService.ClientState.IsPvP) {
-                // in combat
-                try {
-                    var ptlist = DalamudService.GameGui.GetAddonByName("_PartyList", 1);
-                    if (ptlist != IntPtr.Zero) {
-                        var ptlistAtk = (AtkUnitBase*)ptlist;
-                        var x = ptlistAtk->X;
-                        var y = ptlistAtk->Y;
-                        if (ptlistAtk->IsVisible) {
-                            DrawOverray(RecastTimers, x, y);
-                        }
-                    }
-                } catch (Exception e) {
-                    PluginLog.Error(e.Message + "\n" + e.StackTrace);
-                } finally {
-                    ImGui.PopStyleColor();
-                    ImGui.PopFont();
-                }
-            } else {
-                // not in combat
-                bool isLocalPartyListChanged = false;
-
-                if (localPartyList == null || localPartyList.Count() != partyList.Count()) {
-                    // Initialize or partymember count change
-                    localPartyList = new List<Model.ParryMemberModel>();
-                    for (int i = 0; i < partyList.Count(); i++) {
-                        // create
-                        localPartyList.Add(PartyMemberService.CreatePartyMember(partyList[i], i));
-                    }
-                    isLocalPartyListChanged = true;
-                } else {
-                    for (int i = 0; i < localPartyList.Count(); i++) {
-                        // compate partyList
-                        if (PartyMemberService.ComparePartyMember(localPartyList[i], partyList[i], i)) {
-                            // existed change -> update
-                            localPartyList[i] = PartyMemberService.UpdatePartyMember(localPartyList[i], partyList[i], i);
-                            isLocalPartyListChanged = true;
-                        }
-                    }
-                }
-
-                if (isLocalPartyListChanged) {
-                    var lRow = 0;
-                    var lCol = 0;
-                    RecastTimers = new List<RecastTimerModel>();
-                    for (int i = 0; i < localPartyList.Count(); i++) {
-                        var p = localPartyList[i];
-                        var bas = BuffActions.Where(b => b.JobId == p.JobId).ToList();
-                        for (int j = 0; j < bas.Count(); j++) {
-                            RecastTimers.Add(RecastTimerService.AddRecastTimer(p, bas[j], lCol, lRow, config));
-                            lCol++;
-                            if (lCol == config.Columns) {
-                                lCol = 0;
-                                lRow++;
-                            }
-                        }
-                    }
-                }
-
-                if (config.IsPreview) {
-                    if (ImGui.Begin("Debug Window", ImGuiWindowFlags.AlwaysAutoResize)) {
-                        ImGui.Text("[Debug Window 1]");
-                        ImGui.Text("");
-
-                        localPartyList.ForEach(p => {
-                            ImGui.Text("Index");
-                            ImGui.SameLine();
-                            ImGui.Text(p.Index.ToString());
-
-                            ImGui.Text("ObjectId");
-                            ImGui.SameLine();
-                            ImGui.Text(p.ObjectId.ToString());
-
-                            ImGui.Text("JobId");
-                            ImGui.SameLine();
-                            ImGui.Text(p.JobId.ToString());
-
-                            ImGui.Text("MemberName");
-                            ImGui.SameLine();
-                            ImGui.Text(p.MemberName);
-
-                            ImGui.Text("");
-                        });
-                        ImGui.End();
-                    }
-
-                    if (ImGui.Begin("Debug Window2", ImGuiWindowFlags.AlwaysAutoResize)) {
-                        ImGui.Text("[Debug Window 2]");
-                        ImGui.Text("");
-
-                        RecastTimers.ForEach(r => {
-                            ImGui.Image(r.Image.ImGuiHandle, r.imageSize);
-                            ImGui.SameLine();
-                            ImGui.Text("row: " + r.row);
-                            ImGui.SameLine();
-                            ImGui.Text("col: " + r.col);
-                            ImGui.SameLine();
-                            ImGui.Text("text offset x: " + r.textOffsetX.ToString());
-                            ImGui.SameLine();
-                            ImGui.Text("text offset y: " + r.textOffsetY.ToString());
-                        });
-                        ImGui.End();
-                    }
-
-                    if (ImGui.Begin("Debug Window3", ImGuiWindowFlags.AlwaysAutoResize)) {
-                        ImGui.Text("[Debug Window 3]");
-                        ImGui.Text("");
-
-                        GameObject target = DalamudService.TargetManager.Target;
-
-                        if (target is Dalamud.Game.ClientState.Objects.Types.BattleChara b) {
-                            var ss = b.StatusList.Where(s => s.StatusId != 0).ToList();
-                            for (int i = 0; i < ss.Count(); i++) {
-                                var s = ss[i];
-
-                                ImGui.Text("ObjectId: " + target.ObjectId.ToString());
-                                ImGui.Text("StatusId[" + i + "]: " + s.StatusId.ToString());
-                                ImGui.Text("SourceId[" + i + "]: " + s.SourceId.ToString());
-                            }
-                        }
-
-                        ImGui.End();
-                    }
-                }
+                ImGui.PopStyleColor();
+                ImGui.PopFont();
             }
         }
-        public static AtkUnitBase* GetUnitBase(string name, int index = 1) {
-            return (AtkUnitBase*)DalamudService.GameGui.GetAddonByName(name, index);
-        }
 
-        private void DrawOverray(List<RecastTimerModel> recastTimers, short x, short y) {
+        private void DrawOverray(List<RecastTimerModel> recastTimers, Vector2 pos) {
             // --General Setting--
             var localPlayer = DalamudService.ClientState.LocalPlayer;
             var partyList = DalamudService.PartyList;
@@ -334,91 +391,103 @@ namespace RaidBuffRecaster
             float imgWidth = Constants.ImageWidth * config.Size / 100f;
             float imgHeight = Constants.ImageHeight * config.Size / 100f;
 
-            // font
-            ImGui.PushFont(DalamudService.PluginInterface.UiBuilder.GetGameFontHandle(new GameFontStyle(config.Font.Value)).ImFont);
-            ImGui.PushStyleColor(ImGuiCol.Text, config.Color);
+            try {
+                // font
+                ImGui.PushFont(DalamudService.PluginInterface.UiBuilder.GetGameFontHandle(new GameFontStyle(config.Font.Value)).ImFont);
+                ImGui.PushStyleColor(ImGuiCol.Text, Constants.White);
 
-            // window offset
-            ImGuiHelpers.ForceNextWindowMainViewport();
-            ImGuiHelpers.SetNextWindowPosRelativeMainViewport(new Vector2(x + config.OffsetX, y + config.OffsetY));
+                // window offset
+                ImGuiHelpers.ForceNextWindowMainViewport();
+                ImGuiHelpers.SetNextWindowPosRelativeMainViewport(new Vector2(pos.X + config.OffsetX, pos.Y + config.OffsetY - 70));
 
-            if (ImGui.Begin("Overray",
-                    // ImGuiWindowFlags.NoInputs |
-                    // ImGuiWindowFlags.NoMove |
-                    // ImGuiWindowFlags.NoBackground | 
-                    ImGuiWindowFlags.NoTitleBar)) {
+                if (ImGui.Begin("Overray",
+                        ImGuiWindowFlags.NoInputs |
+                        ImGuiWindowFlags.NoMove |
+                        ImGuiWindowFlags.NoScrollbar |
+                        ImGuiWindowFlags.NoBackground |
+                        ImGuiWindowFlags.NoTitleBar)) {
 
-                // font scale
-                ImGui.SetWindowFontScale(0.95f * config.Size / 100);
+                    ImGui.SetWindowSize(new Vector2(config.Columns * (config.Padding + Constants.ImageWidth), maxRow * (config.Padding + imgHeight)));
+                    ImGui.SetWindowFontScale(0.95f * config.Size / 100);
 
-                // Window Size Set
-                ImGui.SetWindowSize(new Vector2(config.Columns * (config.Padding + Constants.ImageWidth), maxRow * (config.Padding + imgHeight)));
+                    for (int i = 0; i < recastTimers.Count(); i++) {
+                        var recastTime = recastTimers[i];
 
-                for(int i = 0; i < recastTimers.Count(); i++) {
-                    var recastTime = recastTimers[i];
+                        // init timer
+                        if (recastTime.StopWatch == null) {
+                            recastTime.StopWatch = new Stopwatch();
+                        }
 
-                    // init timer
-                    if (recastTime.StopWatch == null) {
-                        recastTime.StopWatch = new Stopwatch();
+                        // select partymember
+                        var partyMember = partyList.Where(p => p.ObjectId == recastTime.OwnerId).FirstOrDefault();
+
+                        // get status
+                        var status = MainService.GetStatus(partyMember, recastTime);
+
+                        // exist status ?
+                        Vector4 outlineColor;
+                        if (status != null) {
+                            if (!recastTime.StopWatch.IsRunning) {
+                                recastTime.StopWatch.Start();
+                            }
+                            outlineColor = Const.Constants.Red;
+                        } else {
+                            outlineColor = Const.Constants.Black;
+                            if (recastTime.StopWatch.IsRunning) {
+
+                            }
+                        }
+
+                        var elapsedTime = recastTime.StopWatch.Elapsed.TotalMilliseconds / 1000;
+                        var time = (int)(recastTime.RecastTime - elapsedTime);
+                        var dispTime = time.ToString("#");
+                        var textOffsetX = recastTime.imageOffsetX;
+                        var textOffsetY = recastTime.textOffsetY;
+
+                        if (elapsedTime >= recastTime.RecastTime) {
+                            recastTime.StopWatch.Stop();
+                            recastTime.StopWatch.Reset();
+                            dispTime = recastTime.RecastTime.ToString("#");
+                        } else {
+                            if (dispTime.Length == 2) {
+                                textOffsetX = textOffsetX + (ImGui.GetFontSize() / 3.6f);
+                            } else if (dispTime.Length == 1) {
+                                textOffsetX = textOffsetX + (ImGui.GetFontSize() / 1.8f);
+                            }
+                        }
+
+                        // Draw Image
+                        ImGui.SetCursorPos(recastTime.imageOffset);
+                        ImGui.Image(recastTime.Image.ImGuiHandle, new Vector2(Constants.ImageWidth * config.Size / 100, Constants.ImageHeight * config.Size / 100));
+
+                        // Draw Time
+                        ImGui.PushStyleColor(ImGuiCol.Text, outlineColor);
+                        ImGui.SetCursorPos(new Vector2(textOffsetX + 1.5f, textOffsetY));
+                        ImGui.Text(dispTime);
+
+                        ImGui.SetCursorPos(new Vector2(textOffsetX - 1.5f, textOffsetY));
+                        ImGui.Text(dispTime);
+
+                        ImGui.SetCursorPos(new Vector2(textOffsetX, textOffsetY + 1.5f));
+                        ImGui.Text(dispTime);
+
+                        ImGui.SetCursorPos(new Vector2(textOffsetX, textOffsetY - 1.5f));
+                        ImGui.Text(dispTime);
+
+                        ImGui.PopStyleColor();
+
+                        ImGui.SetCursorPos(new Vector2(textOffsetX, textOffsetY));
+                        ImGui.Text(dispTime);
                     }
 
-                    // select partymember
-                    var partyMember = partyList.Where(p => p.ObjectId == recastTime.OwnerId).FirstOrDefault();
-
-                    // get status
-                    var status = getStatus(partyMember, recastTime);
-                    
-                    // exist status ?
-                    if (status != null) { 
-                        if (!recastTime.StopWatch.IsRunning) {
-                            recastTime.StopWatch.Start();
-                        }
-                    } else {
-                        if(recastTime.StopWatch.IsRunning) {
-                            
-                        }
-                    }
-
-                    var elapsedTime = recastTime.StopWatch.Elapsed.TotalMilliseconds / 1000;
-                    var time = recastTime.RecastTime - elapsedTime;
-                    var dispTime = time.ToString("#");
-                    if (elapsedTime >= recastTime.RecastTime) {
-                        recastTime.StopWatch.Stop();
-                        recastTime.StopWatch.Reset();
-                        dispTime = recastTime.RecastTime.ToString("#");
-                    } else {
-                        if (dispTime.Length == 2) {
-                            dispTime = " " + dispTime + " ";
-                        } else if (dispTime.Length == 1) {
-                            dispTime = "  " + dispTime + "  ";
-                        }
-                    }
-
-                    // Draw Image
-                    ImGui.SetCursorPos(recastTime.imageOffset);
-                    ImGui.Image(recastTime.Image.ImGuiHandle, recastTime.imageSize);
-
-                    // Draw Time
-                    ImGui.SetCursorPos(recastTime.imageOffset);
-                    ImGui.Text(dispTime);
+                    ImGui.End();
                 }
-
-                ImGui.End();
+            } catch (Exception e) {
+                PluginLog.Error(e.Message + "\n" + e.StackTrace);
+            } finally {
+                ImGui.PopStyleColor();
+                ImGui.PopFont();
             }
-        }
-
-        private Dalamud.Game.ClientState.Statuses.Status getStatus(PartyMember p, RecastTimerModel r) {
-            if (p.ClassJob.Id == (uint)JobIds.NIN || p.ClassJob.Id == (uint)JobIds.SCH) {
-                GameObject target = DalamudService.TargetManager.Target;
-                if (target is Dalamud.Game.ClientState.Objects.Types.BattleChara b) {
-                    var statusList = b.StatusList.Where(s => s.StatusId != 0).ToList();
-                    return statusList.Where(s => s.StatusId == r.StatusId).FirstOrDefault();
-                }
-            } else {
-                // get target status
-                return p.Statuses.Where(p => p.StatusId == r.StatusId).FirstOrDefault();
-            }
-            return null;
         }
     }
 }

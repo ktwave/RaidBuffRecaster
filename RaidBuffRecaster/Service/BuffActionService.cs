@@ -156,6 +156,7 @@ namespace RaidBuffRecaster.Service {
             b.Image = pluginInterface.UiBuilder.LoadImage(ImagePath);
             buffActions.Add(b);
 
+            /*
             // "TheArrow"
             b = new BuffAction();
             b.JobId = (uint)JobIds.AST;
@@ -221,6 +222,7 @@ namespace RaidBuffRecaster.Service {
             ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\" + b.ActionId.ToString() + ".png");
             b.Image = pluginInterface.UiBuilder.LoadImage(ImagePath);
             buffActions.Add(b);
+            */
 
             // return
             return buffActions;

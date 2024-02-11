@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace RaidBuffRecaster.Model {
-    internal class ParryMemberModel {
+    internal class PartyMemberModel {
         public int Index { get; set; }
         public uint ObjectId { get; set; }
         public string MemberName { get; set; }

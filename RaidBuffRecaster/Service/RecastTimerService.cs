@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace RaidBuffRecaster.Service
 {
     internal class RecastTimerService {
-        internal static RecastTimerModel AddRecastTimer(ParryMemberModel p, BuffActionModel.BuffAction b, int lCol, int lRow, Config config) {
+        internal static RecastTimerModel AddRecastTimer(PartyMemberModel p, BuffActionModel.BuffAction b, int lCol, int lRow, Config config) {
             RecastTimerModel r = new RecastTimerModel();
 
             r.OwnerId = p.ObjectId;
@@ -22,8 +22,8 @@ namespace RaidBuffRecaster.Service
             r.row = lRow;
             r.col = lCol;
 
-            r.imageWidth = Constants.ImageWidth * config.Size / 100;
-            r.imageHeight = Constants.ImageWidth * config.Size / 100;
+            r.imageWidth = Constants.ImageWidth;
+            r.imageHeight = Constants.ImageWidth;
             r.imageSize = new Vector2(r.imageWidth, r.imageHeight);
 
             r.imageOffsetX = lCol * (r.imageWidth + config.Padding);
