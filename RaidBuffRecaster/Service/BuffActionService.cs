@@ -140,7 +140,7 @@ namespace RaidBuffRecaster.Service {
             b.StatusId = 2722;
             b.ActionId = 25785;
             b.ActionName = "RadiantFinale";
-            b.RecastTime = 120;
+            b.RecastTime = 110;
             ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\" + b.ActionId.ToString() + ".png");
             b.Image = pluginInterface.UiBuilder.LoadImage(ImagePath);
             buffActions.Add(b);
