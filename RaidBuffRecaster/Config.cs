@@ -21,10 +21,13 @@ namespace RaidBuffRecaster
         public float OffsetY { get; set; } = 0;
         public float Size { get; set; } = 100;
         public int Columns { get; set; } = 10;
-        public int Padding { get; set; } = 5;
+        public float Padding { get; set; } = 0;
         public bool IsPreview { get; set; } = false;
         public bool IsEnabled { get; set; } = false;
-        public bool IsDebug { get; set; } = false;
+        public float FontScale { get; set; } = 100;
+        public float FontOffsetX { get; set; } = 0;
+        public float FontOffsetY { get; set; } = 0;
+        public bool IsInCombatOnly { get; set; } = false;
 
         public GameFontFamilyAndSize? Font = null;
 

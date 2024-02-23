@@ -67,6 +67,7 @@ namespace RaidBuffRecaster {
         List<Model.PartyMemberModel> localPartyList;
         List<BuffAction> BuffActions;
         List<RecastTimerModel> RecastTimers;
+        public IDalamudTextureWrap imageBlackOut;
 
         internal Config config;
         internal static RaidBuffRecaster R;
@@ -89,6 +90,9 @@ namespace RaidBuffRecaster {
             DalamudService.PluginInterface.UiBuilder.Draw += Draw;
             config = DalamudService.PluginInterface.GetPluginConfig() as Config ?? new Config();
 
+            var ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\blackout.png");
+            imageBlackOut = pluginInterface.UiBuilder.LoadImage(ImagePath);
+
             DalamudService.PluginInterface.UiBuilder.OpenConfigUi += delegate { isConfigOpen = true; };
             DalamudService.Framework.RunOnFrameworkThread(() => {
                 if (config.Font != null) {
@@ -105,60 +109,13 @@ namespace RaidBuffRecaster {
 
                 if (DalamudService.ClientState.LocalPlayer == null) return;
 
-                // get instance
-                var ownerPlayer = DalamudService.ClientState.LocalPlayer;
-                var actionManager = ActionManager.Instance();
-                var partyList = DalamudService.PartyList;
-
                 if (DalamudService.Condition[ConditionFlag.InCombat] && !DalamudService.ClientState.IsPvP) {
                     // in combat
-                    var pos = MainService.GetPtlistPosition();
-                    if (pos != null) MainService.DrawOverray(RecastTimers, (Vector2)pos, config);
+                    MainService.DrawOverray(RecastTimers, config, imageBlackOut);
                 } else {
                     // not in combat
-                    bool isLocalPartyListChanged = false;
-
-                    if (localPartyList == null || localPartyList.Count() != partyList.Count()) {
-                        // Initialize or partymember count change
-                        localPartyList = new List<Model.PartyMemberModel>();
-                        for (int i = 0; i < partyList.Count(); i++) {
-                            // create
-                            localPartyList.Add(PartyMemberService.CreatePartyMember(partyList[i], i));
-                        }
-                        isLocalPartyListChanged = true;
-                    } else {
-                        for (int i = 0; i < localPartyList.Count(); i++) {
-                            // compate partyList
-                            if (PartyMemberService.ComparePartyMember(localPartyList[i], partyList[i], i)) {
-                                // existed change -> update
-                                localPartyList[i] = PartyMemberService.UpdatePartyMember(localPartyList[i], partyList[i], i);
-                                isLocalPartyListChanged = true;
-                            }
-                        }
-                    }
-
-                    if (isLocalPartyListChanged) {
-                        var lRow = 0;
-                        var lCol = 0;
-                        RecastTimers = new List<RecastTimerModel>();
-                        for (int i = 0; i < localPartyList.Count(); i++) {
-                            var p = localPartyList[i];
-                            var bas = BuffActions.Where(b => b.JobId == p.JobId).ToList();
-                            for (int j = 0; j < bas.Count(); j++) {
-                                RecastTimers.Add(RecastTimerService.AddRecastTimer(p, bas[j], lCol, lRow, config));
-                                lCol++;
-                                if (lCol == config.Columns) {
-                                    lCol = 0;
-                                    lRow++;
-                                }
-                            }
-                        }
-                    }
-
-                    if (config.IsPreview) {
-                        var pos = MainService.GetPtlistPosition();
-                        if (pos != null) MainService.DrawOverrayPreview((Vector2)pos, BuffActions, config);
-                    }
+                    MainService.UpdateRecastTimers(ref config, ref RecastTimers, BuffActions);
+                    if(!config.IsInCombatOnly) MainService.DrawOverray(RecastTimers, config, imageBlackOut);
                 }
             } catch (Exception e) {
                 PluginLog.Error(e.Message + "\n" + e.StackTrace);
