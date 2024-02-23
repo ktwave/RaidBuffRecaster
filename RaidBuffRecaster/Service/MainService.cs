@@ -154,8 +154,7 @@ namespace RaidBuffRecaster.Service {
                         ImGuiWindowFlags.NoInputs |
                         ImGuiWindowFlags.NoScrollbar |
                         ImGuiWindowFlags.NoBackground |
-                        ImGuiWindowFlags.NoTitleBar |
-                        ImGuiWindowFlags.AlwaysAutoResize)) {
+                        ImGuiWindowFlags.NoTitleBar )) {
 
                     isBegin = true;
                     ImGui.SetWindowFontScale(0.95f * config.FontScale / 100);
@@ -241,20 +240,19 @@ namespace RaidBuffRecaster.Service {
                     }
 
                     // AST CARD
-                    var cardStatuses = localPlayer.StatusList.Where(s => s.StatusId >= 4401 && s.StatusId <= 4406).FirstOrDefault();
+                    var cardStatuses = localPlayer.StatusList.Where(s => s.StatusId >= 1882 && s.StatusId <= 1887).FirstOrDefault();
                     if (cardStatuses != null) {
-                        // get timer
-                        var timer = recastTimers.Where(timer => timer.StatusId == cardStatuses.StatusId).FirstOrDefault();
 
                         // Draw Image
                         var offsetX = col * (imgWidth + config.Padding) + config.OffsetX;
                         var offsetY = row * imgHeight + config.OffsetY;
                         ImGui.SetCursorPos(new Vector2(offsetX, offsetY));
-                        ImGui.Image(timer.Image.ImGuiHandle, new Vector2(imgWidth, imgHeight));
+                        var ImagePath = Path.Combine(DalamudService.PluginInterface.AssemblyLocation.Directory?.FullName!, "images\\play.png");
+                        ImGui.Image(DalamudService.PluginInterface.UiBuilder.LoadImage(ImagePath).ImGuiHandle, new Vector2(imgWidth, imgHeight));
 
                         // Draw Time
                         Vector4 outlineColor = Constants.Red;
-                        var dispTime = (timer.RecastTime - cardStatuses.RemainingTime).ToString();
+                        var dispTime = cardStatuses.RemainingTime.ToString("#");
 
                         // a len text width
                         var aLenTextWidth = ((ImGui.CalcTextSize(dispTime).X / dispTime.Length) * (3 - dispTime.Length) / 2);

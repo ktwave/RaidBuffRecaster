@@ -50,6 +50,9 @@
 	  <None Update="Images\blackout.png">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
+	  <None Update="Images\play.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
 	  <None Update="RaidBuffRecaster.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
