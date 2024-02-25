@@ -26,7 +26,7 @@ using static RaidBuffRecaster.Model.BuffActionModel;
 
 namespace RaidBuffRecaster.Service {
     internal class MainService {
-        internal static void DrawConfigWindow(ref Config config, ref bool isConfigOpen) {
+        internal static void DrawConfigWindow(ref Config config, ref bool isConfigOpen, ref List<BuffAction> buffActions) {
             if (ImGui.Begin("RaidBuffRecaster Config", ref isConfigOpen, ImGuiWindowFlags.NoResize | ImGuiWindowFlags.AlwaysAutoResize)) {
                 ImGui.SetWindowSize(new Vector2(350, 500));
 
@@ -37,6 +37,7 @@ namespace RaidBuffRecaster.Service {
 
                 ImGui.Spacing();
 
+                /*
                 var isInCombatOnly = config.IsInCombatOnly;
                 if (ImGui.Checkbox("戦闘時のみ有効(In Combat Only)", ref isInCombatOnly)) {
                     config.IsInCombatOnly = isInCombatOnly;
@@ -44,71 +45,99 @@ namespace RaidBuffRecaster.Service {
                 ImGui.Spacing();
                 ImGui.Separator();
                 ImGui.Spacing();
+                */
 
-                ImGui.Text("アイコン X座標のオフセット(Image X Offset)");
-                var offsetX = config.OffsetX;
-                ImGui.SetNextItemWidth(200f);
-                if (ImGui.DragFloat("##offsetX", ref offsetX, 0.1f)) {
-                    config.OffsetX = offsetX;
+                if (ImGui.CollapsingHeader("UI設定(UI Settings)")) {
+
+                    ImGui.Text("アイコン X座標のオフセット(Image X Offset)");
+                    var offsetX = config.OffsetX;
+                    ImGui.SetNextItemWidth(200f);
+                    if (ImGui.DragFloat("##offsetX", ref offsetX, 0.1f)) {
+                        config.OffsetX = offsetX;
+                    }
+                    ImGui.Spacing();
+
+                    ImGui.Text("アイコン  Y座標のオフセット(Image Y Offset)");
+                    var offsetY = config.OffsetY;
+                    ImGui.SetNextItemWidth(200f);
+                    if (ImGui.DragFloat("##offsetY", ref offsetY, 0.1f)) {
+                        config.OffsetY = offsetY;
+                    }
+                    ImGui.Spacing();
+
+                    ImGui.Text("アイコンの拡大率(Icon Scale)");
+                    var size = config.Size;
+                    ImGui.SetNextItemWidth(200f);
+                    if (ImGui.DragFloat("##Size", ref size, 0.5f, 1, 300)) {
+                        config.Size = size;
+                    }
+                    ImGui.Spacing();
+
+                    ImGui.Text("1列辺りのアイコン数(Icon Columns)");
+                    var columns = config.Columns;
+                    ImGui.SetNextItemWidth(200f);
+                    if (ImGui.DragInt("##Columns", ref columns, 1f, 1, 20)) {
+                        config.Columns = columns;
+                    }
+                    ImGui.Spacing();
+
+                    ImGui.Text("アイコンの横間隔(Icon Padding)");
+                    var padding = config.Padding;
+                    ImGui.SetNextItemWidth(200f);
+                    if (ImGui.DragFloat("##Padding", ref padding, 0.5f, 0, 100)) {
+                        config.Padding = padding;
+                    }
+                    ImGui.Spacing();
+
+                    ImGui.Text("フォントの拡大率(Font Scale)");
+                    var fontScale = config.FontScale;
+                    ImGui.SetNextItemWidth(200f);
+                    if (ImGui.DragFloat("##Scale", ref fontScale, 0.5f, 1, 300)) {
+                        config.FontScale = fontScale;
+                    }
+                    ImGui.Spacing();
+
+                    ImGui.Text("フォント X座標のオフセット(Font X Offset)");
+                    var fontOffsetX = config.FontOffsetX;
+                    ImGui.SetNextItemWidth(200f);
+                    if (ImGui.DragFloat("##FontOffsetX", ref fontOffsetX, 0.1f)) {
+                        config.FontOffsetX = fontOffsetX;
+                    }
+                    ImGui.Spacing();
+
+                    ImGui.Text("フォント Y座標のオフセット(Font Y Offset)");
+                    var fontOffsetY = config.FontOffsetY;
+                    ImGui.SetNextItemWidth(200f);
+                    if (ImGui.DragFloat("##FontOffsetY", ref fontOffsetY, 0.1f)) {
+                        config.FontOffsetY = fontOffsetY;
+                    }
+
+                    ImGui.Spacing();
+
+                    var isIconBottomAlign = config.IsIconBottomAlign;
+                    if (ImGui.Checkbox("アイコンを下から詰めて表示(Icons Bottom Aligin)", ref isIconBottomAlign)) {
+                        config.IsIconBottomAlign = isIconBottomAlign;
+                    }
+                    ImGui.Spacing();
+
                 }
+                ImGui.Separator();
                 ImGui.Spacing();
 
-                ImGui.Text("アイコン  Y座標のオフセット(Image Y Offset)");
-                var offsetY = config.OffsetY;
-                ImGui.SetNextItemWidth(200f);
-                if (ImGui.DragFloat("##offsetY", ref offsetY, 0.1f)) {
-                    config.OffsetY = offsetY;
-                }
-                ImGui.Spacing();
+                if (ImGui.CollapsingHeader("アクション設定(Action ON/OFF)")) {
+                    foreach(var i in Enumerable.Range(0 , buffActions.Count)) {
+                        var isEnableAction = config.IsEnableAction[buffActions[i].ActionId];
+                        if (ImGui.Checkbox(buffActions[i].ActionName, ref isEnableAction)) {
+                            config.IsEnableAction[buffActions[i].ActionId] = isEnableAction;
+                        }
+                    }
 
-                ImGui.Text("アイコンの拡大率(Icon Scale)");
-                var size = config.Size;
-                ImGui.SetNextItemWidth(200f);
-                if (ImGui.DragFloat("##Size", ref size, 0.5f, 1, 300)) {
-                    config.Size = size;
-                }
-                ImGui.Spacing();
-
-                ImGui.Text("1列辺りのアイコン数(Icon Columns)");
-                var columns = config.Columns;
-                ImGui.SetNextItemWidth(200f);
-                if (ImGui.DragInt("##Columns", ref columns, 1f, 1, 20)) {
-                    config.Columns = columns;
-                }
-                ImGui.Spacing();
-
-                ImGui.Text("アイコンの横間隔(Icon Padding)");
-                var padding = config.Padding;
-                ImGui.SetNextItemWidth(200f);
-                if (ImGui.DragFloat("##Padding", ref padding, 0.5f, 0, 100)) {
-                    config.Padding = padding;
-                }
-                ImGui.Spacing();
-
-                ImGui.Text("フォントの拡大率(Font Scale)");
-                var fontScale = config.FontScale;
-                ImGui.SetNextItemWidth(200f);
-                if (ImGui.DragFloat("##Scale", ref fontScale, 0.5f, 1, 300)) {
-                    config.FontScale = fontScale;
-                }
-                ImGui.Spacing();
-
-                ImGui.Text("フォント X座標のオフセット(Font X Offset)");
-                var fontOffsetX = config.FontOffsetX;
-                ImGui.SetNextItemWidth(200f);
-                if (ImGui.DragFloat("##FontOffsetX", ref fontOffsetX, 0.1f)) {
-                    config.FontOffsetX = fontOffsetX;
-                }
-                ImGui.Spacing();
-
-                ImGui.Text("フォント Y座標のオフセット(Font Y Offset)");
-                var fontOffsetY = config.FontOffsetY;
-                ImGui.SetNextItemWidth(200f);
-                if (ImGui.DragFloat("##FontOffsetY", ref fontOffsetY, 0.1f)) {
-                    config.FontOffsetY = fontOffsetY;
+                    var isEnableAstCardAction = config.IsEnableAstCardAction;
+                    if(ImGui.Checkbox("AST Card", ref isEnableAstCardAction)) {
+                        config.IsEnableAstCardAction = isEnableAstCardAction;
+                    }
                 }
 
-                ImGui.Spacing();
                 ImGui.Separator();
                 ImGui.Spacing();
 
@@ -134,8 +163,12 @@ namespace RaidBuffRecaster.Service {
 
                 var col = 0;
                 var row = 0;
-
                 var maxRow = Constants.maxRow / config.Columns;
+                if (config.IsIconBottomAlign) {
+                    row = (int)maxRow;
+                    maxRow = 0;
+                }
+                
                 float imgWidth = Constants.ImageWidth * config.Size / 100f;
                 float imgHeight = Constants.ImageHeight * config.Size / 100f;
                 Vector2? pos = GetPtlistPosition();
@@ -154,7 +187,7 @@ namespace RaidBuffRecaster.Service {
                         ImGuiWindowFlags.NoInputs |
                         ImGuiWindowFlags.NoScrollbar |
                         ImGuiWindowFlags.NoBackground |
-                        ImGuiWindowFlags.NoTitleBar )) {
+                        ImGuiWindowFlags.NoTitleBar)) {
 
                     isBegin = true;
                     ImGui.SetWindowFontScale(0.95f * config.FontScale / 100);
@@ -235,7 +268,11 @@ namespace RaidBuffRecaster.Service {
                         col++;
                         if (col == config.Columns) {
                             col = 0;
-                            row++;
+                            if(config.IsIconBottomAlign) {
+                                row--;
+                            } else {
+                                row++;
+                            }
                         }
                     }
 
@@ -319,14 +356,14 @@ namespace RaidBuffRecaster.Service {
             return null;
         }
 
-        internal unsafe static void UpdateRecastTimers(ref Config config, ref List<RecastTimerModel> recastTimers, List<BuffAction> buffActions) {
+        internal unsafe static void UpdateRecastTimers(Config config, ref List<RecastTimerModel> recastTimers, List<BuffAction> buffActions) {
             var localPlayer = DalamudService.ClientState.LocalPlayer;
             var partyList = DalamudService.PartyList;
             recastTimers = new List<RecastTimerModel>();
 
             if (partyList.Count == 0) {
                 // solo
-                var buff = buffActions.Where(b => b.JobId == localPlayer.ClassJob.Id).ToList();
+                var buff = buffActions.Where(b => b.JobId == localPlayer.ClassJob.Id && config.IsEnableAction[b.ActionId]).ToList();
                 foreach (var j in Enumerable.Range(0, buff.Count)) {
                     recastTimers.Add(RecastTimerService.AddRecastTimer(localPlayer, buff[j], config));
                 }
@@ -334,7 +371,7 @@ namespace RaidBuffRecaster.Service {
                 // party
                 for (int i = 0; i < partyList.Count(); i++) {
                     var partyMember = partyList[i];
-                    var buff = buffActions.Where(b => b.JobId == partyMember.ClassJob.Id).ToList();
+                    var buff = buffActions.Where(b => b.JobId == partyMember.ClassJob.Id && config.IsEnableAction[b.ActionId]).ToList();
                     foreach (var j in Enumerable.Range(0, buff.Count)) {
                         recastTimers.Add(RecastTimerService.AddRecastTimer(partyMember, buff[j], config));
                     }

@@ -80,30 +80,35 @@ namespace RaidBuffRecaster {
         }
 
         public RaidBuffRecaster([RequiredVersion("1.0")] DalamudPluginInterface pluginInterface) {
-            PluginInterface = pluginInterface;
+            try {
+                PluginInterface = pluginInterface;
 
-            // Initialize setting for buffs
-            BuffActions = BuffActionService.Initialize(PluginInterface);
+                R = this;
+                PluginInterface.Create<DalamudService>();
+                DalamudService.PluginInterface.UiBuilder.Draw += Draw;
+                config = DalamudService.PluginInterface.GetPluginConfig() as Config ?? new Config();
 
-            R = this;
-            PluginInterface.Create<DalamudService>();
-            DalamudService.PluginInterface.UiBuilder.Draw += Draw;
-            config = DalamudService.PluginInterface.GetPluginConfig() as Config ?? new Config();
+                // Initialize setting for buffs
+                if (config.IsEnableAction == null) config.InitIsEnableAction();
+                BuffActions = BuffActionService.Initialize(PluginInterface, config);
 
-            var ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\blackout.png");
-            imageBlackOut = pluginInterface.UiBuilder.LoadImage(ImagePath);
+                var ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\blackout.png");
+                imageBlackOut = pluginInterface.UiBuilder.LoadImage(ImagePath);
 
-            DalamudService.PluginInterface.UiBuilder.OpenConfigUi += delegate { isConfigOpen = true; };
-            DalamudService.Framework.RunOnFrameworkThread(() => {
-                if (config.Font != null) {
-                    _ = DalamudService.PluginInterface.UiBuilder.GetGameFontHandle(new GameFontStyle(config.Font.Value));
-                }
-            });
+                DalamudService.PluginInterface.UiBuilder.OpenConfigUi += delegate { isConfigOpen = true; };
+                DalamudService.Framework.RunOnFrameworkThread(() => {
+                    if (config.Font != null) {
+                        _ = DalamudService.PluginInterface.UiBuilder.GetGameFontHandle(new GameFontStyle(config.Font.Value));
+                    }
+                });
+            } catch (Exception e) {
+                PluginLog.Error(e.Message + "\n" + e.StackTrace);
+            }
         }
 
         private void Draw() {
             try {
-                if (isConfigOpen) MainService.DrawConfigWindow(ref config, ref isConfigOpen);
+                if (isConfigOpen) MainService.DrawConfigWindow(ref config, ref isConfigOpen, ref BuffActions);
 
                 if (!config.IsEnabled) return;
 
@@ -113,13 +118,13 @@ namespace RaidBuffRecaster {
                     // in combat
                     MainService.DrawOverray(RecastTimers, config, imageBlackOut);
                 } else {
-                    // not in combat
-                    MainService.UpdateRecastTimers(ref config, ref RecastTimers, BuffActions);
-                    if(!config.IsInCombatOnly) MainService.DrawOverray(RecastTimers, config, imageBlackOut);
+                    // not in combat -> updateTimer
+                    MainService.UpdateRecastTimers(config, ref RecastTimers, BuffActions);
+                    //if(!config.IsInCombatOnly)
+                    MainService.DrawOverray(RecastTimers, config, imageBlackOut);
                 }
             } catch (Exception e) {
                 PluginLog.Error(e.Message + "\n" + e.StackTrace);
-            } finally {
             }
         }
     }

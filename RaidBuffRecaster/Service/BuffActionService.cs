@@ -8,15 +8,47 @@ using static RaidBuffRecaster.Model.BuffActionModel;
 
 namespace RaidBuffRecaster.Service {
     static class BuffActionService {
-        public static List<BuffAction> Initialize(Dalamud.Plugin.DalamudPluginInterface pluginInterface) {
+        public enum ActionIds {
+            ArcaneCircle = 24405,
+            BattleLitany = 3557,
+            BattleVoice = 118,
+            Brotherhood = 7396,
+            ChainStratagem = 7436,
+            Devilment = 16011,
+            Divination = 16552,
+            DragonSight = 7398,
+            Embolden = 7520,
+            Mug = 2248,
+            QuadTechFinish = 16196,
+            RadiantFinale = 25785,
+            SearingLight = 25801,
+        }
+
+        public enum StatusIds {
+            ArcaneCircle = 2599,
+            BattleLitany = 786,
+            BattleVoice = 141,
+            Brotherhood = 1182,
+            ChainStratagem = 1221,
+            Devilment = 1825,
+            Divination = 1878,
+            DragonSight = 1910,
+            Embolden = 1239,
+            Mug = 638,
+            QuadTechFinish = 1822,
+            RadiantFinale = 2722,
+            SearingLight = 2703,
+        }
+
+        public static List<BuffAction> Initialize(Dalamud.Plugin.DalamudPluginInterface pluginInterface, Config config) {
             List<BuffAction> buffActions = new List<BuffAction>();
 
             // ArcaneCircle
             BuffAction b = new BuffAction();
             b.JobId = (uint)JobIds.RPR;
-            b.StatusId = 2599;
-            b.ActionId = 24405;
-            b.ActionName = "ArcaneCircle";
+            b.StatusId = (uint)StatusIds.ArcaneCircle;
+            b.ActionId = (uint)ActionIds.ArcaneCircle;
+            b.ActionName = ActionIds.ArcaneCircle.ToString();
             b.RecastTime = 120;
             var ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\" + b.ActionId.ToString() + ".png");
             b.Image = pluginInterface.UiBuilder.LoadImage(ImagePath);
@@ -26,9 +58,9 @@ namespace RaidBuffRecaster.Service {
             // "BattleLitany"
             b = new BuffAction();
             b.JobId = (uint)JobIds.DRG;
-            b.StatusId = 786;
-            b.ActionId = 3557;
-            b.ActionName = "BattleLitany";
+            b.StatusId = (uint)StatusIds.BattleLitany;
+            b.ActionId = (uint)ActionIds.BattleLitany;
+            b.ActionName = ActionIds.BattleLitany.ToString();
             b.RecastTime = 120;
             ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\" + b.ActionId.ToString() + ".png");
             b.Image = pluginInterface.UiBuilder.LoadImage(ImagePath);
@@ -37,9 +69,9 @@ namespace RaidBuffRecaster.Service {
             // "BattleVoice"
             b = new BuffAction();
             b.JobId = (uint)JobIds.BRD;
-            b.StatusId = 141;
-            b.ActionId = 118;
-            b.ActionName = "BattleVoice";
+            b.StatusId = (uint)StatusIds.BattleVoice;
+            b.ActionId = (uint)ActionIds.BattleVoice;
+            b.ActionName = ActionIds.BattleVoice.ToString();
             b.RecastTime = 120;
             ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\" + b.ActionId.ToString() + ".png");
             b.Image = pluginInterface.UiBuilder.LoadImage(ImagePath);
@@ -48,9 +80,9 @@ namespace RaidBuffRecaster.Service {
             // "Brotherhood"
             b = new BuffAction();
             b.JobId = (uint)JobIds.MNK;
-            b.StatusId = 1182;
-            b.ActionId = 7396;
-            b.ActionName = "Brotherhood";
+            b.StatusId = (uint)StatusIds.Brotherhood;
+            b.ActionId = (uint)ActionIds.Brotherhood;
+            b.ActionName = ActionIds.Brotherhood.ToString();
             b.RecastTime = 120;
             ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\" + b.ActionId.ToString() + ".png");
             b.Image = pluginInterface.UiBuilder.LoadImage(ImagePath);
@@ -59,9 +91,9 @@ namespace RaidBuffRecaster.Service {
             // "ChainStratagem"
             b = new BuffAction();
             b.JobId = (uint)JobIds.SCH;
-            b.StatusId = 1221;
-            b.ActionId = 7436;
-            b.ActionName = "ChainStratagem";
+            b.StatusId = (uint)StatusIds.ChainStratagem;
+            b.ActionId = (uint)ActionIds.ChainStratagem;
+            b.ActionName = ActionIds.ChainStratagem.ToString();
             b.RecastTime = 120;
             ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\" + b.ActionId.ToString() + ".png");
             b.Image = pluginInterface.UiBuilder.LoadImage(ImagePath);
@@ -70,21 +102,20 @@ namespace RaidBuffRecaster.Service {
             // "Devilment"
             b = new BuffAction();
             b.JobId = (uint)JobIds.DNC;
-            b.StatusId = 1825;
-            b.ActionId = 16011;
-            b.ActionName = "Devilment";
+            b.StatusId = (uint)StatusIds.Devilment;
+            b.ActionId = (uint)ActionIds.Devilment;
+            b.ActionName = ActionIds.Devilment.ToString();
             b.RecastTime = 120;
             ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\" + b.ActionId.ToString() + ".png");
             b.Image = pluginInterface.UiBuilder.LoadImage(ImagePath);
-
             buffActions.Add(b);
 
             // "Divination"
             b = new BuffAction();
             b.JobId = (uint)JobIds.AST;
-            b.StatusId = 1878;
-            b.ActionId = 16552;
-            b.ActionName = "Divination";
+            b.StatusId = (uint)StatusIds.Divination;
+            b.ActionId = (uint)ActionIds.Divination;
+            b.ActionName = ActionIds.Divination.ToString();
             b.RecastTime = 120;
             ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\" + b.ActionId.ToString() + ".png");
             b.Image = pluginInterface.UiBuilder.LoadImage(ImagePath);
@@ -93,9 +124,9 @@ namespace RaidBuffRecaster.Service {
             // "DragonSight"
             b = new BuffAction();
             b.JobId = (uint)JobIds.DRG;
-            b.StatusId = 1910;
-            b.ActionId = 7398;
-            b.ActionName = "DragonSight";
+            b.StatusId = (uint)StatusIds.DragonSight;
+            b.ActionId = (uint)ActionIds.DragonSight;
+            b.ActionName = ActionIds.DragonSight.ToString();
             b.RecastTime = 120;
             ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\" + b.ActionId.ToString() + ".png");
             b.Image = pluginInterface.UiBuilder.LoadImage(ImagePath);
@@ -104,9 +135,9 @@ namespace RaidBuffRecaster.Service {
             // "Embolden"
             b = new BuffAction();
             b.JobId = (uint)JobIds.RDM;
-            b.StatusId = 1239;
-            b.ActionId = 7520;
-            b.ActionName = "Embolden";
+            b.StatusId = (uint)StatusIds.Embolden;
+            b.ActionId = (uint)ActionIds.Embolden;
+            b.ActionName = ActionIds.Embolden.ToString();
             b.RecastTime = 120;
             ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\" + b.ActionId.ToString() + ".png");
             b.Image = pluginInterface.UiBuilder.LoadImage(ImagePath);
@@ -115,9 +146,9 @@ namespace RaidBuffRecaster.Service {
             // "Mug"
             b = new BuffAction();
             b.JobId = (uint)JobIds.NIN;
-            b.StatusId = 638;
-            b.ActionId = 2248;
-            b.ActionName = "Mug";
+            b.StatusId = (uint)StatusIds.Mug;
+            b.ActionId = (uint)ActionIds.Mug;
+            b.ActionName = ActionIds.Mug.ToString();
             b.RecastTime = 120;
             ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\" + b.ActionId.ToString() + ".png");
             b.Image = pluginInterface.UiBuilder.LoadImage(ImagePath);
@@ -126,9 +157,9 @@ namespace RaidBuffRecaster.Service {
             // "QuadTechFinish"
             b = new BuffAction();
             b.JobId = (uint)JobIds.DNC;
-            b.StatusId = 1822;
-            b.ActionId = 16196;
-            b.ActionName = "QuadTechFinish";
+            b.StatusId = (uint)StatusIds.QuadTechFinish;
+            b.ActionId = (uint)ActionIds.QuadTechFinish;
+            b.ActionName = ActionIds.QuadTechFinish.ToString();
             b.RecastTime = 120;
             ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\" + b.ActionId.ToString() + ".png");
             b.Image = pluginInterface.UiBuilder.LoadImage(ImagePath);
@@ -137,9 +168,9 @@ namespace RaidBuffRecaster.Service {
             // "RadiantFinale"
             b = new BuffAction();
             b.JobId = (uint)JobIds.BRD;
-            b.StatusId = 2722;
-            b.ActionId = 25785;
-            b.ActionName = "RadiantFinale";
+            b.StatusId = (uint)StatusIds.RadiantFinale;
+            b.ActionId = (uint)ActionIds.RadiantFinale;
+            b.ActionName = ActionIds.RadiantFinale.ToString();
             b.RecastTime = 110;
             ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\" + b.ActionId.ToString() + ".png");
             b.Image = pluginInterface.UiBuilder.LoadImage(ImagePath);
@@ -148,9 +179,9 @@ namespace RaidBuffRecaster.Service {
             // "SearingLight"
             b = new BuffAction();
             b.JobId = (uint)JobIds.SMN;
-            b.StatusId = 2703;
-            b.ActionId = 25801;
-            b.ActionName = "SearingLight";
+            b.StatusId = (uint)StatusIds.SearingLight;
+            b.ActionId = (uint)ActionIds.SearingLight;
+            b.ActionName = ActionIds.SearingLight.ToString();
             b.RecastTime = 120;
             ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\" + b.ActionId.ToString() + ".png");
             b.Image = pluginInterface.UiBuilder.LoadImage(ImagePath);
