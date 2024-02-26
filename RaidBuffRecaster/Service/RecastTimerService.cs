@@ -18,7 +18,7 @@ namespace RaidBuffRecaster.Service
             r.OwnerId = p.ObjectId;
             r.ActionId = b.ActionId;
             r.StatusId = b.StatusId;
-            r.RecastTime = b.RecastTime;
+            r.RecastTime = b.RecastTime - b.RemainingTime;
             r.Image = b.Image;
             r.StopWatch = new System.Diagnostics.Stopwatch();
 
@@ -31,7 +31,7 @@ namespace RaidBuffRecaster.Service
             r.OwnerId = p.ObjectId;
             r.ActionId = b.ActionId;
             r.StatusId = b.StatusId;
-            r.RecastTime = b.RecastTime;
+            r.RecastTime = b.RecastTime - b.RemainingTime;
             r.Image = b.Image;
             r.StopWatch = new System.Diagnostics.Stopwatch();
 

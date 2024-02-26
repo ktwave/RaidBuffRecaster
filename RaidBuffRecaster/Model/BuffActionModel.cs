@@ -14,6 +14,7 @@ namespace RaidBuffRecaster.Model {
             public string ActionName { get; set; }
             public float RecastTime { get; set; }
             public IDalamudTextureWrap Image { get; set; }
+            public float RemainingTime { get; set; }
 
             void SetJobId(uint JobId) {
                 this.JobId = JobId;

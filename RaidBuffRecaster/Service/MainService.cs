@@ -208,33 +208,21 @@ namespace RaidBuffRecaster.Service {
                         ImGui.Image(timer.Image.ImGuiHandle, new Vector2(imgWidth, imgHeight));
 
                         // timer
-                        if (timer.StopWatch.IsRunning) {
-                            if (status != null) {
-                                // effect time
-                                outlineColor = Constants.Red;
-                                dispTime = (timer.RecastTime - (timer.StopWatch.ElapsedMilliseconds / 1000)).ToString("#");
-                            } else {
-                                // no effect
-                                outlineColor = Constants.Black;
-                                if (timer.RecastTime <= timer.StopWatch.ElapsedMilliseconds / 1000) {
-                                    timer.StopWatch.Stop();
-                                    timer.StopWatch.Reset();
-                                } else {
+                        if (status != null) {
+                            // effect time
+                            outlineColor = Constants.Red;
+                            dispTime = status.RemainingTime.ToString("#");
+                            timer.StopWatch.Restart();
+                        } else {
+                            // no effect
+                            outlineColor = Constants.Black;
+                            if (timer.StopWatch.IsRunning) {
+                                if (timer.RecastTime > timer.StopWatch.ElapsedMilliseconds / 1000) {
                                     // recast time
                                     ImGui.SetCursorPos(new Vector2(offsetX, offsetY));
                                     ImGui.Image(imageBlackOut.ImGuiHandle, new Vector2(imgWidth, imgHeight));
                                     dispTime = (timer.RecastTime - (timer.StopWatch.ElapsedMilliseconds / 1000)).ToString("#");
                                 }
-                            }
-                        } else {
-                            if (status == null) {
-                                // delay
-                                outlineColor = Constants.Black;
-                            } else {
-                                // cast start
-                                outlineColor = Constants.Red;
-                                timer.StopWatch.Start();
-                                dispTime = (timer.RecastTime - (timer.StopWatch.ElapsedMilliseconds / 1000)).ToString("#");
                             }
                         }
 

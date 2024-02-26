@@ -50,6 +50,7 @@ namespace RaidBuffRecaster.Service {
             b.ActionId = (uint)ActionIds.ArcaneCircle;
             b.ActionName = ActionIds.ArcaneCircle.ToString();
             b.RecastTime = 120;
+            b.RemainingTime = 20;
             var ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\" + b.ActionId.ToString() + ".png");
             b.Image = pluginInterface.UiBuilder.LoadImage(ImagePath);
             buffActions.Add(b);
@@ -62,6 +63,7 @@ namespace RaidBuffRecaster.Service {
             b.ActionId = (uint)ActionIds.BattleLitany;
             b.ActionName = ActionIds.BattleLitany.ToString();
             b.RecastTime = 120;
+            b.RemainingTime = 15;
             ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\" + b.ActionId.ToString() + ".png");
             b.Image = pluginInterface.UiBuilder.LoadImage(ImagePath);
             buffActions.Add(b);
@@ -73,6 +75,7 @@ namespace RaidBuffRecaster.Service {
             b.ActionId = (uint)ActionIds.BattleVoice;
             b.ActionName = ActionIds.BattleVoice.ToString();
             b.RecastTime = 120;
+            b.RemainingTime = 15;
             ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\" + b.ActionId.ToString() + ".png");
             b.Image = pluginInterface.UiBuilder.LoadImage(ImagePath);
             buffActions.Add(b);
@@ -84,6 +87,7 @@ namespace RaidBuffRecaster.Service {
             b.ActionId = (uint)ActionIds.Brotherhood;
             b.ActionName = ActionIds.Brotherhood.ToString();
             b.RecastTime = 120;
+            b.RemainingTime = 15;
             ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\" + b.ActionId.ToString() + ".png");
             b.Image = pluginInterface.UiBuilder.LoadImage(ImagePath);
             buffActions.Add(b);
@@ -95,6 +99,7 @@ namespace RaidBuffRecaster.Service {
             b.ActionId = (uint)ActionIds.ChainStratagem;
             b.ActionName = ActionIds.ChainStratagem.ToString();
             b.RecastTime = 120;
+            b.RemainingTime = 15;
             ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\" + b.ActionId.ToString() + ".png");
             b.Image = pluginInterface.UiBuilder.LoadImage(ImagePath);
             buffActions.Add(b);
@@ -106,6 +111,7 @@ namespace RaidBuffRecaster.Service {
             b.ActionId = (uint)ActionIds.Devilment;
             b.ActionName = ActionIds.Devilment.ToString();
             b.RecastTime = 120;
+            b.RemainingTime = 20;
             ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\" + b.ActionId.ToString() + ".png");
             b.Image = pluginInterface.UiBuilder.LoadImage(ImagePath);
             buffActions.Add(b);
@@ -117,6 +123,7 @@ namespace RaidBuffRecaster.Service {
             b.ActionId = (uint)ActionIds.Divination;
             b.ActionName = ActionIds.Divination.ToString();
             b.RecastTime = 120;
+            b.RemainingTime = 15;
             ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\" + b.ActionId.ToString() + ".png");
             b.Image = pluginInterface.UiBuilder.LoadImage(ImagePath);
             buffActions.Add(b);
@@ -128,6 +135,7 @@ namespace RaidBuffRecaster.Service {
             b.ActionId = (uint)ActionIds.DragonSight;
             b.ActionName = ActionIds.DragonSight.ToString();
             b.RecastTime = 120;
+            b.RemainingTime = 20;
             ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\" + b.ActionId.ToString() + ".png");
             b.Image = pluginInterface.UiBuilder.LoadImage(ImagePath);
             buffActions.Add(b);
@@ -139,6 +147,7 @@ namespace RaidBuffRecaster.Service {
             b.ActionId = (uint)ActionIds.Embolden;
             b.ActionName = ActionIds.Embolden.ToString();
             b.RecastTime = 120;
+            b.RemainingTime = 15;
             ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\" + b.ActionId.ToString() + ".png");
             b.Image = pluginInterface.UiBuilder.LoadImage(ImagePath);
             buffActions.Add(b);
@@ -150,6 +159,7 @@ namespace RaidBuffRecaster.Service {
             b.ActionId = (uint)ActionIds.Mug;
             b.ActionName = ActionIds.Mug.ToString();
             b.RecastTime = 120;
+            b.RemainingTime = 20;
             ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\" + b.ActionId.ToString() + ".png");
             b.Image = pluginInterface.UiBuilder.LoadImage(ImagePath);
             buffActions.Add(b);
@@ -161,6 +171,7 @@ namespace RaidBuffRecaster.Service {
             b.ActionId = (uint)ActionIds.QuadTechFinish;
             b.ActionName = ActionIds.QuadTechFinish.ToString();
             b.RecastTime = 120;
+            b.RemainingTime = 20;
             ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\" + b.ActionId.ToString() + ".png");
             b.Image = pluginInterface.UiBuilder.LoadImage(ImagePath);
             buffActions.Add(b);
@@ -172,6 +183,7 @@ namespace RaidBuffRecaster.Service {
             b.ActionId = (uint)ActionIds.RadiantFinale;
             b.ActionName = ActionIds.RadiantFinale.ToString();
             b.RecastTime = 110;
+            b.RemainingTime = 15;
             ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\" + b.ActionId.ToString() + ".png");
             b.Image = pluginInterface.UiBuilder.LoadImage(ImagePath);
             buffActions.Add(b);
@@ -183,6 +195,7 @@ namespace RaidBuffRecaster.Service {
             b.ActionId = (uint)ActionIds.SearingLight;
             b.ActionName = ActionIds.SearingLight.ToString();
             b.RecastTime = 120;
+            b.RemainingTime = 30;
             ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\" + b.ActionId.ToString() + ".png");
             b.Image = pluginInterface.UiBuilder.LoadImage(ImagePath);
             buffActions.Add(b);
