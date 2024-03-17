@@ -6,6 +6,7 @@ using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Game.ClientState.Party;
 using Dalamud.Game.ClientState.Statuses;
 using Dalamud.Game.ClientState.Structs;
+using Dalamud.Game.Command;
 using Dalamud.Game.Internal;
 using Dalamud.Hooking;
 using Dalamud.Interface;
@@ -88,19 +89,33 @@ namespace RaidBuffRecaster {
                 DalamudService.PluginInterface.UiBuilder.Draw += Draw;
                 config = DalamudService.PluginInterface.GetPluginConfig() as Config ?? new Config();
 
-                // Initialize setting for buffs
+                // Initialize Setting
+                DalamudService.CommandManager.AddHandler(Constants.CommandConfig, new CommandInfo(PluginCommand) { HelpMessage = Constants.HelpMessageConfig });
+                DalamudService.CommandManager.AddHandler(Constants.CommandToggle, new CommandInfo(PluginCommand) { HelpMessage = Constants.HelpMessageToggle });
+
                 if (config.IsEnableAction == null) config.InitIsEnableAction();
+                if (config.Font != null) DalamudService.PluginInterface.UiBuilder.GetGameFontHandle(new GameFontStyle(config.Font.Value));
+                imageBlackOut = pluginInterface.UiBuilder.LoadImage(Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\blackout.png"));
                 BuffActions = BuffActionService.Initialize(PluginInterface, config);
 
-                var ImagePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "images\\blackout.png");
-                imageBlackOut = pluginInterface.UiBuilder.LoadImage(ImagePath);
-
                 DalamudService.PluginInterface.UiBuilder.OpenConfigUi += delegate { isConfigOpen = true; };
-                DalamudService.Framework.RunOnFrameworkThread(() => {
-                    if (config.Font != null) {
-                        _ = DalamudService.PluginInterface.UiBuilder.GetGameFontHandle(new GameFontStyle(config.Font.Value));
-                    }
-                });
+                DalamudService.Framework.RunOnFrameworkThread(() => {});
+
+            } catch (Exception e) {
+                PluginLog.Error(e.Message + "\n" + e.StackTrace);
+            }
+        }
+
+        private void PluginCommand(string command, string arguments) {
+            try {
+                switch (command) {
+                    case Constants.CommandConfig:
+                        isConfigOpen = !isConfigOpen;
+                        break;
+                    case Constants.CommandToggle:
+                        config.IsEnabled = !config.IsEnabled;
+                        break;
+                }
             } catch (Exception e) {
                 PluginLog.Error(e.Message + "\n" + e.StackTrace);
             }
@@ -120,7 +135,6 @@ namespace RaidBuffRecaster {
                 } else {
                     // not in combat -> updateTimer
                     MainService.UpdateRecastTimers(config, ref RecastTimers, BuffActions);
-                    //if(!config.IsInCombatOnly)
                     MainService.DrawOverray(RecastTimers, config, imageBlackOut);
                 }
             } catch (Exception e) {

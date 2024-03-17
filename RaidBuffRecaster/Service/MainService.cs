@@ -171,9 +171,9 @@ namespace RaidBuffRecaster.Service {
                 
                 float imgWidth = Constants.ImageWidth * config.Size / 100f;
                 float imgHeight = Constants.ImageHeight * config.Size / 100f;
-                Vector2? pos = GetPtlistPosition();
+                // Vector2? pos = GetPtlistPosition();
 
-                if (pos == null) return;
+                // if (pos == null) return;
 
                 // font
                 ImGui.PushFont(DalamudService.PluginInterface.UiBuilder.GetGameFontHandle(new GameFontStyle(config.Font.Value)).ImFont);
@@ -181,17 +181,18 @@ namespace RaidBuffRecaster.Service {
 
                 // window offset
                 ImGuiHelpers.ForceNextWindowMainViewport();
-                ImGuiHelpers.SetNextWindowPosRelativeMainViewport(new Vector2(pos.Value.X + config.OffsetX, pos.Value.Y + config.OffsetY - 100f));
+                ImGuiHelpers.SetNextWindowPosRelativeMainViewport(new Vector2(config.OffsetX, config.OffsetY));
 
                 if (ImGui.Begin("Overray",
                         ImGuiWindowFlags.NoInputs |
                         ImGuiWindowFlags.NoScrollbar |
+                        ImGuiWindowFlags.AlwaysAutoResize |
                         ImGuiWindowFlags.NoBackground |
                         ImGuiWindowFlags.NoTitleBar)) {
 
                     isBegin = true;
                     ImGui.SetWindowFontScale(0.95f * config.FontScale / 100);
-                    ImGui.SetWindowSize(new Vector2(Constants.maxColumn * (imgWidth + config.Padding) + config.OffsetX, maxRow * (imgHeight + config.Padding) + config.OffsetY));
+                    // ImGui.SetWindowSize(new Vector2(Constants.maxColumn * (imgWidth + config.Padding) + config.OffsetX, maxRow * (imgHeight + config.Padding) + config.OffsetY));
 
                     foreach (var i in Enumerable.Range(0, recastTimers.Count)) {
                         Vector4 outlineColor;

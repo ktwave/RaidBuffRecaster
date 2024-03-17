@@ -9,6 +9,11 @@ namespace RaidBuffRecaster.Const
 {
     public static class Constants
     {
+        public const string CommandConfig = "/rbrcfg";
+        public const string CommandToggle = "/rbrtgl";
+        public const string HelpMessageConfig = "コンフィグ画面を開きます(Open Raid Buff Recaster Config Window)";
+        public const string HelpMessageToggle = "オーバーレイの有効/無効を切り替えます(Switch Raid Buff Recaster Enabled/Disabled)";
+
         public const uint ImageWidth = 76;
         public const uint ImageHeight = 76;
         public const uint maxColumn = 20;
